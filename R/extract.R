@@ -7,7 +7,7 @@
 #}
 
 "[[.exhlist" <- function(i, j) {
-  ret <- unclass(i)[[j]]
-  attr(ret, "exhlist") <- attributes(i)
-  return(ret)
+	ret <- unclass(i)[[j]]
+	attr(ret, "exhlist") <- attributes(i)
+	return(ret)
 }
