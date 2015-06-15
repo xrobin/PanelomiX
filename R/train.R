@@ -33,7 +33,7 @@ exh.train <- function(data, predictors, response,
 					  filter.randomForest=FALSE,
 					  verbose=T,
 					  multiple.panels=c("all", "random", "first"),
-					  na.rm=c("all", "local"),
+					  na.rm=FALSE,
 					  name.for.java="",
 					  limit.java.threads=NA,
 					  java.keep.files=TRUE,
@@ -41,18 +41,19 @@ exh.train <- function(data, predictors, response,
 	
 	# Match arguments
 	constrain.on <- match.arg(constrain.on)
-	na.rm <- match.arg(na.rm)
 	multiple.panels <- match.arg(multiple.panels)
 	all.predictors <- c(predictors, fixed.predictors)
 	# Remove nas
-	if (na.rm == "all")
-		data <- data[!apply(as.data.frame(data[,all.predictors]), 1, function(x) {any(is.na(x))}),]
-	# Remove unneeded columns in the data
-	data <- data[,c(id, predictors, fixed.predictors, response)]
+	if (na.rm)
+		data <- na.omit(data[, c(id, all.predictors, response)])
 	# Remove patients with unneeded levels
 	data <- data[data[[response]] %in% levels,]
 	# And remove unused levels
 	data[[response]] <- factor(data[[response]], levels=levels)
+	# Now if we still have any na, return NA
+	if (any(is.na(data))) {
+		return(NA)
+	}
 	#  require(gtools) # function combinations - not used anymore
 	exh <- list()
 	class(exh) <- "exh"
