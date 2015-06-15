@@ -378,8 +378,10 @@ read.java.output <- function(conf.file="conf", result.file=NA) {
   # then read the output
   for (line in readLines(result.file, warn=FALSE)) {
     if (length(grep("^Better panel found: ", line))>0) {
-      se <- as.numeric(sub("^Better panel found: se = (.+); sp = .+$", "\\1", line, perl=TRUE))/100
-      sp <- as.numeric(sub("^Better panel found: se = .+; sp = (.+)$", "\\1", line, perl=TRUE))/100
+      se_str <- sub("^Better panel found: se = (.+); sp = .+$", "\\1", line, perl=TRUE)
+      se <- as.numeric(sub(",", ".", se_str))/100
+      sp_str <- sub("^Better panel found: se = .+; sp = (.+)$", "\\1", line, perl=TRUE)
+      sp <- as.numeric(sub(",", ".", sp_str))/100
       working.panels <- list()
       class(working.panels) <- "exhlist"
     }
