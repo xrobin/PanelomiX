@@ -19,9 +19,7 @@
 #' @param java.keep.files if \code{TRUE}, the java files are kept, if \code{FALSE} they are deleted
 #' @examples 
 #' data(aSAH, package="pROC")
-#' exh.train(aSAH, 
-#' 	c("age", "s100b", "ndka"),
-#' 	"outcome")
+#' exh.train(aSAH, c("age", "s100b", "ndka"), "outcome")
 exh.train <- function(data, predictors, response,
 	fixed.predictors=NULL,
 	id=NULL,
