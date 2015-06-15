@@ -15,8 +15,8 @@
 #' @param multiple.panels one of \dQuote{all}, \dQuote{random} or \dQuote{first} when multiple panels are equivalent, which one(s) to report
 #' @param na.rm one of \dQuote{all} or \dQuote{local}
 #' @param working.dir a (preferably empty) directory where the files required by java will be placed. If \code{\link{missing}}, \code{NULL} \code{NA} or an empty string, a random name will be attributed in /tmp, otherwise the given string will be used.
-#' @param limit.java.threads how many threads to use. if \code{NA} (default), java will define itself how many threads to use. If an integer is given, will force to this number
 #' @param java.keep.files if \code{TRUE}, the java files are kept, if \code{FALSE} they are deleted. If \code{NULL} or \code{\link{missing}}, the files will be kept unless a temporary file was created because \code{working.dir} was missing \code{NULL}, \code{NA} or an empty string. Note that even with \code{java.keep.files = FALSE}, files main remain if the panel doesn't complete.
+#' @param limit.java.threads how many threads to use. if \code{NA} (default), java will define itself how many threads to use. If an integer is given, will force to this number
 #' @examples 
 #' data(aSAH, package="pROC")
 #' exh.train(aSAH, c("age", "s100b", "ndka"), "outcome")
@@ -35,8 +35,8 @@ exh.train <- function(data, predictors, response,
 					  multiple.panels=c("all", "random", "first"),
 					  na.rm=FALSE,
 					  working.dir=NULL,
-					  limit.java.threads=NA,
 					  java.keep.files=TRUE,
+					  limit.java.threads=NA,
 					  ...) {
 	
 	# Match arguments
