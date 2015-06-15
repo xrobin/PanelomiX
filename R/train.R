@@ -37,8 +37,7 @@ exh.train <- function(data, predictors, response,
 					  na.rm=FALSE,
 					  working.dir=NULL,
 					  java.keep.files=TRUE,
-					  limit.java.threads=NA,
-					  ...) {
+					  limit.java.threads=NA) {
 	
 	# Match arguments
 	constrain.on <- match.arg(constrain.on)
@@ -176,7 +175,7 @@ exh.train <- function(data, predictors, response,
 			for (i in 1:dim(combinations)[2]) {
 				cur_combination = c(combinations[,i], fixed.predictors)
 				print(cur_combination)
-				e <- exh.train(data, cur_combination, response, constrain.on=constrain.on, min.constr=min.constr, levels=levels, panels.of.num=2, test.thresholds=test.thresholds, verbose=F, multiple.panels="all", ...)
+				e <- exh.train(data, cur_combination, response, constrain.on=constrain.on, min.constr=min.constr, levels=levels, panels.of.num=2, test.thresholds=test.thresholds, verbose=F, multiple.panels="all")
 				# take the thresholds and merge to the list
 				for (panel in e) {
 					for (mol in names(panel$threshold)) {
@@ -198,7 +197,7 @@ exh.train <- function(data, predictors, response,
 				if (filter.number.thresholds < num.thresholds.for.this.pred) {
 					# determine n intervals and find the best threshold inside each interval
 					require(pROC)
-					r <- roc(data[[response]], data[[pred]], levels=levels, plot=FALSE, ...)
+					r <- roc(data[[response]], data[[pred]], levels=levels, plot=FALSE)
 					sq <- sort(rep(c(1:filter.number.thresholds), length.out=length(r$SES))) # determine the regions
 					sums <- r$SES + r$SPS # we'll look for the best sums SE + SP in each region
 					new.thresholds <- c()
