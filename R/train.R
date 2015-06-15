@@ -234,7 +234,7 @@ exh.train <- function(data, predictors, response,
 	    cat("fixed.predictors:", paste('"', paste(exh$fixed.predictors, collapse='","'), '"', sep=""), "\n", sep="", file=conf.filename, append=TRUE)
 	cat("datafile:", '"data.csv"', "\n", sep="", file=conf.filename, append=TRUE)
 	cat("outputfile:\"result\"\n", file=conf.filename, append=TRUE)
-	cat("progressfile:\"../progress\"\n", file=conf.filename, append=TRUE)
+	cat("progressfile:\"progress\"\n", file=conf.filename, append=TRUE)
 	cat("thresholds:\n", file=conf.filename, append=TRUE)
 	for(mol in all.predictors)
 	  #if (length(exh$possible.thresholds[[mol]]) > 0)
@@ -260,7 +260,6 @@ exh.train <- function(data, predictors, response,
 	}
 	cat("#time.start:", as.character(exh$time.start), "\n", sep="", file=conf.filename, append=TRUE)
 
-	browser()
 	args <- rJava::.jarray(c("-m=0", "-c", conf.filename), "java/lang/String")
 	panelomix <- rJava::.jcall("ch/unige/bprg/panelomix/PanelomiX", "V", "main", args)
 	rJava::.jcheck()
