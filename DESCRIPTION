@@ -4,8 +4,7 @@ Title: combine biomarkers with thresholds
 Version: 0.0.1
 Date: 2011-??-??
 Encoding: UTF-8
-Imports: pROC, randomForest, rJava
-Imports: methods
+Imports: pROC, randomForest, rJava, methods, stringr
 Author: Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti, Frédérique Lisacek, Jean-Charles Sanchez and Markus Müller
 Maintainer: Xavier Robin <Xavier.Robin@unige.ch>
 Description: Tools for combining biomarkers with a threshold approach. Visualizations.
