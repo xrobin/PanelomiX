@@ -198,6 +198,7 @@ exh.train <- function(data, predictors, response,
 					# determine n intervals and find the best threshold inside each interval
 					require(pROC)
 					r <- roc(data[[response]], data[[pred]], levels=levels, plot=FALSE)
+					stop("Sorry the ROC part seems to be buggy and needs to be rewritten")
 					sq <- sort(rep(c(1:filter.number.thresholds), length.out=length(r$SES))) # determine the regions
 					sums <- r$SES + r$SPS # we'll look for the best sums SE + SP in each region
 					new.thresholds <- c()
