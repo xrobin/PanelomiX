@@ -25,3 +25,5 @@ export(
 	plot.table.nr.stability # plot.table.nr.stability.R
 
 )
+
+import(stringr)

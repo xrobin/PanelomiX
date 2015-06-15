@@ -280,7 +280,7 @@ exh.train <- function(data, predictors, response,
 #' Reads the output of the java PanelomiX processing. If you plan to re-read a panel later, make sure you run \code{\link{exh.train}} with \code{java.keep.files=TRUE}. 
 #' @param conf.file the name of the configuration file to read data from
 #' @param result.file can be used to restrict which files to read exactly
-#' @importFrom stringr str_match
+#' @importFrom stringr str_match_all
 #' @export
 read.java.output <- function(conf.file="conf", result.file=NA) {
 	# first recover the configuration options
