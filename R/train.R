@@ -3,7 +3,7 @@
 #' @param predictors the name of the columns to be tested as predictors in the panel. May or may not be used.
 #' @param response the binary response column name
 #' @param fixed.predictors predictors to force into the panel
-#' @oaram id a column with sample ids
+#' @param id a column with sample ids
 #' @param constrain.on,min.constr objective constrains. Consider only panel with \code{min.nr} \dQuote{specificity} or \dQuote{sensitivity}, or maximize global \dQuote{accuracy}
 #' @param levels the values of \code{response} to use as negative and positive data
 #' @param panels.of.num a vector of integer, defining the acceptable number of markers included in the panel
