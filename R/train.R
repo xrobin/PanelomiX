@@ -263,6 +263,7 @@ exh.train <- function(data, predictors, response,
 	browser()
 	args <- rJava::.jarray(c("-m=0", "-c", conf.filename), "java/lang/String")
 	panelomix <- rJava::.jcall("ch/unige/bprg/panelomix/PanelomiX", "V", "main", args)
+	rJava::.jcheck()
 	# Also suggested: J("ch.unige.bprg.panelomix.PanelomiX", "main")
 	# system(paste('java ch.unige.bprg.panelomix.PanelomiX -m=0 -c "', getwd(), '/', conf.filename, '"', sep=""))
 	# get the data back
