@@ -20,6 +20,7 @@
 #' @examples 
 #' data(aSAH, package="pROC")
 #' exh.train(aSAH, c("age", "s100b", "ndka"), "outcome")
+#' @export
 exh.train <- function(data, predictors, response,
 					  fixed.predictors=NULL,
 					  id=NULL,
