@@ -1,5 +1,6 @@
 *.class
 PanelomiX.jar
+!inst/java/PanelomiX.jar
 .Rproj.user/
 .Rhistory
 *~
