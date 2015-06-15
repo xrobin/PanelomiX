@@ -1,12 +1,37 @@
-# Calls exh.train in nreps k-fold CV round to evaluate performance
-exh.train.cv <- function(data, predictors, response, fixed.predictors=NULL, id=NULL, levels=base::levels(as.factor(data[[response]])), nreps=10, k=10, stratified=TRUE, na.rm=c("all", "local"), rand.response=FALSE, progress="progress_cv", ...) {
-	na.rm <- match.arg(na.rm)
+#' Cross-validation of a panel
+#' @description
+#' Calls exh.train in nreps k-fold CV round to evaluate performance
+#' @param data the dataset
+#' @param predictors the name of the columns to be tested as predictors in the panel. May or may not be used.
+#' @param response the binary response column name
+#' @param id the name of a column storing unique IDs for the observations
+#' @param fixed.predictors predictors to force into the panel
+#' @param id a column with sample ids
+#' @param levels the values of \code{response} to use as negative and positive data
+#' @param nreps number of cross-validation repeats
+#' @param k number of folds of the cross-validation (use \code{k = nrow(data)}) for leave-one-out CV
+#' @param stratified whether to keep the balance of positive/negative samples in all the CV folds
+#' @param working.dir a (preferably empty) directory where the files required by java will be placed. If NA or "", a random name will be attributed in /tmp, otherwise the given string will be used.
+#' @param
+
+#' @param ... further arguments passed to \code{\link{exh.train}}. \code{constrain.on}, \code{min.constr}, \code{panels.of.num} or \code{limit.java.threads} are probably the most useful ones.
+#' @export
+#' @examples 
+#' data(aSAH, package="pROC")
+#' exh.train.cv(aSAH, c("age", "s100b", "ndka"), "outcome")
+exh.train.cv <- function(data, predictors, response, 
+						 fixed.predictors=NULL, 
+						 id=NULL, 
+						 levels=base::levels(as.factor(data[[response]])), 
+						 na.rm=FALSE,
+						 nreps=10, k=10, stratified=TRUE, 
+						 working.dir=NULL,
+						 java.keep.files=TRUE,
+						 progress="progress_cv", 
+						 ...) {
 	all.predictors <- c(predictors, fixed.predictors)
-	# Remove nas
-	if (na.rm == "all")
-		data <- data[!apply(as.data.frame(data[,all.predictors]), 1, function(x) {any(is.na(x))}),]
 	
-	if (is.null(id)) {
+	if (missing(id) || is.null(id)) {
 		random.string <- ""
 		while (nchar(random.string) != 10 || random.string %in% names(data))
 			random.string <- paste("id.", paste(c(letters, LETTERS, 0:9)[ceiling(runif(7, 0, 62))], collapse=""), sep="")
@@ -15,12 +40,36 @@ exh.train.cv <- function(data, predictors, response, fixed.predictors=NULL, id=N
 	}
 	rownames(data) <- data[[id]] # make sure we have ID as row names
 	
-	data <- data[,c(id, all.predictors, response)]
-	data <- subset(data, data[[response]]==levels[1] | data[[response]]==levels[2])
+	# Remove nas
+	if (na.rm)
+		data <- na.omit(data[, c(id, all.predictors, response)])
+	# Remove patients with unneeded levels
+	data <- data[data[[response]] %in% levels,]
+	# And remove unused levels
+	data[[response]] <- factor(data[[response]], levels=levels)
+	# Now if we still have any na, return NA
+	if (any(is.na(data))) {
+		return(NA)
+	}
 	
 	# 10-fold CV
 	preds <- numeric()
 	outcomes <- data[[response]][0]
+	
+	if (missing(working.dir) || is.null(working.dir) || is.na(working.dir) || working.dir == "") {
+		working.dir <- tempfile("PanelomiX_")
+		if (verbose) {
+			message(paste0("Creating temporary file in ", working.dir, "."))
+		}
+		if (missing(java.keep.files) || is.null(java.keep.files)) {
+			java.keep.files <- FALSE
+		}
+	}
+	else if (missing(java.keep.files) || is.null(java.keep.files)) {
+		java.keep.files <- TRUE
+	}
+	dir.create(working.dir, showWarnings = FALSE)
+	file.create(conf.filename)
 	
 	exhcv <- list()
 	class(exhcv) <- "exhcvlist"
@@ -29,24 +78,17 @@ exh.train.cv <- function(data, predictors, response, fixed.predictors=NULL, id=N
 		exhcv[[reps]] <- list()
 		class(exhcv[[reps]]) <- "exhcv"
 		attr(exhcv[[reps]], "time.start") <- Sys.time()
-		if (rand.response) {
-			data[[response]] <- sample(data[[response]])
-		}
 		s <- cv.indices(n=length(data[[response]]), k=k, stratified=stratified, response=data[[response]], levels=levels)
-		#    s = sample(rep(1:k, ceiling(npat/k))[1:npat])
 		for (i in 1:k){ 
 			cat(reps, i, "\n", file=progress, append=TRUE)
 			test = data[!is.na(s) & s==i,] # remove the NAs that are generated if response contains more than the two levels
 			learn = data[!is.na(s) & s!=i,]
-			exhcv[[reps]][[i]] <- exh.train(learn, predictors, response, fixed.predictors, levels=levels, verbose=F, progress=FALSE, ...)
+			fold.working.dir <- file.path(working.dir, paste(reps, i, sep="_"))
+			exhcv[[reps]][[i]] <- exh.train(learn, predictors, response, fixed.predictors, 
+											levels=levels, verbose=F, progress=FALSE, 
+											working.dir = fold.working.dir, java.keep.files = java.keep.files,
+											...)
 			exhcv[[reps]][[i]]$test.data <- test
-			#exhcv[[reps]][[i]] <- try(exh.train(learn, predictors, response, fixed.predictors, levels=levels, verbose=F, progress=FALSE, ...))
-			#  if (class(exhcv[[reps]][[i]])=="try-error")
-			#    next()
-			#      if (!send.to.java || !run.java.later) {
-			#        preds <- c(preds, predict(model, newdata=test))
-			#        outcomes <- c(outcomes, test[[response]])
-			#      }
 		}
 		attr(exhcv[[reps]], "time.end") <- Sys.time()
 	}
@@ -54,43 +96,27 @@ exh.train.cv <- function(data, predictors, response, fixed.predictors=NULL, id=N
 	# add whole data
 	attr(exhcv, "train.data") <- data
 	attr(exhcv, "time.end") <- Sys.time()
-	return(exhcv)
-	
-	# restore factor if needed
-	if (class(data[[response]])=="factor") {
-		outcomes <- as.factor(outcomes)
-		attributes(outcomes) <- attributes(data[[response]][0])
+	if (! java.keep.files) {
+		rm <- unlink(paste(working.dir, sep=""), recursive=TRUE)
+		if (rm == 1)
+			warning(paste0("Directory ", working.dir, " could not be removed. Please delete it manually."))
 	}
-	# Test on whole training set
-	#  final.model <- exh.train(data, predictors, response, levels=levels, ...)
-	# Add CV results to model
-	#  final.model$CV <- list()
-	#  final.model$CV$outcomes <- outcomes
-	#  final.model$CV$preds <- preds
-	# Print ROC with training + CV
-	#  plot.roc(data[[response]], predict(final.model), levels=levels, area.display=T, partial.area=c(100, 90), show.area=T, percent=T, show.thres=T)
-	#  plot.roc(outcomes, preds, add=T, levels=levels, col=options()$colors$sapphire, partial.area=c(100, 90), show.area=T, show.area.y=45, percent=T, show.thres=T, area.ci=T)
-	#  plot.roc(data[[response]], predict(final.model), levels=levels, percent=T, show.thres=T)
-	#  plot.roc(outcomes, preds, add=T, levels=levels, col=options()$colors$sapphire, percent=T, show.thres=T)
-	#  legend("bottomright", lwd=2, col=c("black", options()$colors$sapphire), legend=c("Training set", "Cross-Validation"))
-	
-	#  return(final.model)
+	return(exhcv)
 }
 
 
-
-cv.indices <- function(n, k, stratified=TRUE, response=NA, levels=base::levels(as.factor(response))) {
+#' @rdname Internals
+#' @param n number of observations
+#' @param k number of folds
+#' @param stratified if CV must be stratified (similar number of observations of each group in each fold) or not. Defaults to \code{TRUE}.
+#' @param response,levels as for \code{\link{exh.train.cv}}
+cv.indices <- function(n, k, stratified=TRUE, response, levels) {
 	# returns the indices for cross-validation
 	# n: number of patients
 	# k: fols of CV
 	# stratified: if CV must be stratified (similar number of patients of each group in each fold) or not. Defaults to true
 	# response, levels: only required if stratified=TRUE (default)
 	if (stratified) {
-		# make sure the responses are given
-		if (any(is.na(response)))
-			stop("Unable to compute stratified CV folds if response is NA")
-		if (length(response) != n)
-			stop("n differs from the size of the response. Please check for consistency")
 		#patients in group 1
 		group.1 <- response==levels[1]
 		group.2 <- response==levels[2]
