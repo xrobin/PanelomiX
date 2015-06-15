@@ -84,7 +84,7 @@ exh.train.cv <- function(data, predictors, response,
 			learn = data[!is.na(s) & s!=i,]
 			fold.working.dir <- file.path(working.dir, paste(reps, i, sep="_"))
 			exhcv[[reps]][[i]] <- exh.train(learn, predictors, response, fixed.predictors, 
-											levels=levels, verbose=FALSE, progress=FALSE, 
+											levels=levels, verbose=FALSE,
 											working.dir = fold.working.dir, java.keep.files = java.keep.files,
 											...)
 			exhcv[[reps]][[i]]$test.data <- test
