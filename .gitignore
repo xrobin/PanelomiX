@@ -1,6 +1,7 @@
-.class
+*.class
 PanelomiX.jar
 .Rproj.user/
+.Rhistory
 *~
 
 .Rproj.user
