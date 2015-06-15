@@ -20,7 +20,7 @@
 #' @examples 
 #' data(aSAH, package="pROC")
 #' exh.train(aSAH, 
-#' 	c("age", "wfns", "s100b", "ndka"),
+#' 	c("age", "s100b", "ndka"),
 #' 	"outcome")
 exh.train <- function(data, predictors, response,
 	fixed.predictors=NULL,
@@ -99,6 +99,9 @@ exh.train <- function(data, predictors, response,
 	else 
 		require(pROC, quietly = TRUE)
   	for (predictor in all.predictors) {
+  		if (!is.numeric(data[[predictor]])) {
+  			stop("All predictor columns must be numeric")
+  		}
   		if (is.null(directions[[predictor]])) {
   			curve <- pROC::roc(data[[response]], data[[predictor]], levels=levels)
   			directions[[predictor]] <- curve$direction
