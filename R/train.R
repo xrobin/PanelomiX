@@ -14,9 +14,9 @@
 #' @param verbose enables additional output for debugging
 #' @param multiple.panels one of \dQuote{all}, \dQuote{random} or \dQuote{first} when multiple panels are equivalent, which one(s) to report
 #' @param na.rm one of \dQuote{all} or \dQuote{local}
-#' @param working.dir a (preferably empty) directory where the files required by java will be placed. If NA or "", a random name will be attributed in /tmp, otherwise the given string will be used.
+#' @param working.dir a (preferably empty) directory where the files required by java will be placed. If \code{\link{missing}}, \code{NULL} \code{NA} or an empty string, a random name will be attributed in /tmp, otherwise the given string will be used.
 #' @param limit.java.threads how many threads to use. if \code{NA} (default), java will define itself how many threads to use. If an integer is given, will force to this number
-#' @param java.keep.files if \code{TRUE}, the java files are kept, if \code{FALSE} they are deleted
+#' @param java.keep.files if \code{TRUE}, the java files are kept, if \code{FALSE} they are deleted. If \code{NULL} or \code{\link{missing}}, the files will be kept unless a temporary file was created because \code{working.dir} was missing \code{NULL}, \code{NA} or an empty string. Note that even with \code{java.keep.files = FALSE}, files main remain if the panel doesn't complete.
 #' @examples 
 #' data(aSAH, package="pROC")
 #' exh.train(aSAH, c("age", "s100b", "ndka"), "outcome")
@@ -34,7 +34,7 @@ exh.train <- function(data, predictors, response,
 					  verbose=T,
 					  multiple.panels=c("all", "random", "first"),
 					  na.rm=FALSE,
-					  working.dir="",
+					  working.dir=NULL,
 					  limit.java.threads=NA,
 					  java.keep.files=TRUE,
 					  ...) {
@@ -213,20 +213,26 @@ exh.train <- function(data, predictors, response,
 	exh$possible.thresholds <- possible.thresholds
 	
 	# PUT OPTIONS TO JSON FOR JAVA
-	if (is.na(working.dir) | working.dir == "") {
+	if (missing(working.dir) || is.null(working.dir) || is.na(working.dir) || working.dir == "") {
 		working.dir <- tempfile("PanelomiX_")
 		if (verbose) {
 			message(paste0("Creating temporary file in ", working.dir, "."))
 		}
+		if (missing(java.keep.files) || is.null(java.keep.files)) {
+			java.keep.files <- FALSE
+		}
 	}
-	conf.filename <- paste(working.dir, "conf", sep="/")
+	else if (missing(java.keep.files) || is.null(java.keep.files)) {
+		java.keep.files <- TRUE
+	}
+	conf.filename <- file.path(working.dir, "conf")
 	dir.create(working.dir, showWarnings = FALSE)
 	file.create(conf.filename)
 	
 	# Prepare the data
 	data.to.write <- exh$train.data[c(exh$id, exh$all.predictors, exh$response)];
 	data.to.write <- subset(data.to.write, exh$train.data[[exh$response]]==exh$levels[1] | exh$train.data[[exh$response]]==exh$levels[2])
-	write.csv(data.to.write, row.names=FALSE, file=paste(working.dir, "data.csv", sep="/"))
+	write.csv(data.to.write, row.names=FALSE, file=file.path(working.dir, "data.csv"))
 	# Prepare the conf file
 	cat("response:", paste('"', exh$response, '"', sep=""), "\n", sep="", file=conf.filename)
 	cat("levels:", paste('"', paste(exh$levels, collapse='","'), '"', sep=""), "\n", sep="", file=conf.filename, append=TRUE)
