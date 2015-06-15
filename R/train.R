@@ -32,7 +32,7 @@ exh.train <- function(data, predictors, response,
 					  directions=NULL,
 					  filter.number.thresholds=NA, # ignored if filter.randomForest is a list
 					  filter.randomForest=FALSE,
-					  verbose=T,
+					  verbose=FALSE,
 					  multiple.panels=c("all", "random", "first"),
 					  na.rm=FALSE,
 					  working.dir=NULL,
