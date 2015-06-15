@@ -11,9 +11,8 @@
 #' @param nreps number of cross-validation repeats
 #' @param k number of folds of the cross-validation (use \code{k = nrow(data)}) for leave-one-out CV
 #' @param stratified whether to keep the balance of positive/negative samples in all the CV folds
-#' @param working.dir a (preferably empty) directory where the files required by java will be placed. If NA or "", a random name will be attributed in /tmp, otherwise the given string will be used.
-#' @param
-
+#' @param verbose enables additional output for debugging
+#' @param working.dir,java.keep.files same as for \code{\link{exh.train}}
 #' @param ... further arguments passed to \code{\link{exh.train}}. \code{constrain.on}, \code{min.constr}, \code{panels.of.num} or \code{limit.java.threads} are probably the most useful ones.
 #' @export
 #' @examples 
@@ -25,6 +24,7 @@ exh.train.cv <- function(data, predictors, response,
 						 levels=base::levels(as.factor(data[[response]])), 
 						 na.rm=FALSE,
 						 nreps=10, k=10, stratified=TRUE, 
+						 verbose=FALSE,
 						 working.dir=NULL,
 						 java.keep.files=TRUE,
 						 progress="progress_cv", 
@@ -69,7 +69,6 @@ exh.train.cv <- function(data, predictors, response,
 		java.keep.files <- TRUE
 	}
 	dir.create(working.dir, showWarnings = FALSE)
-	file.create(conf.filename)
 	
 	exhcv <- list()
 	class(exhcv) <- "exhcvlist"
@@ -85,7 +84,7 @@ exh.train.cv <- function(data, predictors, response,
 			learn = data[!is.na(s) & s!=i,]
 			fold.working.dir <- file.path(working.dir, paste(reps, i, sep="_"))
 			exhcv[[reps]][[i]] <- exh.train(learn, predictors, response, fixed.predictors, 
-											levels=levels, verbose=F, progress=FALSE, 
+											levels=levels, verbose=FALSE, progress=FALSE, 
 											working.dir = fold.working.dir, java.keep.files = java.keep.files,
 											...)
 			exhcv[[reps]][[i]]$test.data <- test
@@ -105,6 +104,7 @@ exh.train.cv <- function(data, predictors, response,
 }
 
 
+#' @name cv.indices
 #' @rdname Internals
 #' @param n number of observations
 #' @param k number of folds
