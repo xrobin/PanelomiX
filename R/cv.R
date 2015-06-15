@@ -27,7 +27,6 @@ exh.train.cv <- function(data, predictors, response,
 						 verbose=FALSE,
 						 working.dir=NULL,
 						 java.keep.files=TRUE,
-						 progress="progress_cv", 
 						 ...) {
 	all.predictors <- c(predictors, fixed.predictors)
 	
@@ -69,6 +68,7 @@ exh.train.cv <- function(data, predictors, response,
 		java.keep.files <- TRUE
 	}
 	dir.create(working.dir, showWarnings = FALSE)
+	progress.file <- file.path(working.dir, "progress")
 	
 	exhcv <- list()
 	class(exhcv) <- "exhcvlist"
@@ -79,7 +79,7 @@ exh.train.cv <- function(data, predictors, response,
 		attr(exhcv[[reps]], "time.start") <- Sys.time()
 		s <- cv.indices(n=length(data[[response]]), k=k, stratified=stratified, response=data[[response]], levels=levels)
 		for (i in 1:k){ 
-			cat(reps, i, "\n", file=progress, append=TRUE)
+			cat(reps, i, "\n", file=progress.file, append=TRUE)
 			test = data[!is.na(s) & s==i,] # remove the NAs that are generated if response contains more than the two levels
 			learn = data[!is.na(s) & s!=i,]
 			fold.working.dir <- file.path(working.dir, paste(reps, i, sep="_"))
