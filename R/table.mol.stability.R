@@ -1,48 +1,53 @@
-#### STABILITY TABLES AND PLOTS ####
-
-## Frequency of the choice of molecule ##
-
-table.mol.stability <- function(...) {
+#' Frequency of the choice of molecules 
+#' @param object the panel model
+#' @param ... additional arguments to and from other methods
+#' @export
+table.mol.stability <- function(object, ...) {
 	UseMethod("table.mol.stability")
 }
 
-# table for a list of cross-validations (exhcvlist)
-table.mol.stability.exhcvlist  <- function(exhcvlist) {
-	nreps <- length(exhcvlist)
-	res <- rep(0, length(exhcvlist[[1]][[1]][[1]]$all.predictors))
-	names(res) <- exhcvlist[[1]]$all.predictors
+#' @rdname table.mol.stability
+#' @export
+table.mol.stability.exhcvlist  <- function(object, ...) {
+	nreps <- length(object)
+	res <- rep(0, length(object[[1]][[1]][[1]]$all.predictors))
+	names(res) <- object[[1]]$all.predictors
 	class(res) <- "table.mol.stability"
 	for (reps in 1:nreps) {
-		res <- res + table.mol.stability(exhcvlist[[reps]])
+		res <- res + table.mol.stability(object[[reps]])
 	}
 	res/nreps
 }
 
-# table for a single cross-validation (exhcv)
-table.mol.stability.exhcv  <- function(exhcv) {
-	k <- length(exhcv)
-	res <- rep(0, length(exhcv[[1]][[1]]$all.predictors))
-	names(res) <- exhcv[[1]]$all.predictors
+
+#' @rdname table.mol.stability
+#' @export
+table.mol.stability.exhcv  <- function(object, ...) {
+	k <- length(object)
+	res <- rep(0, length(object[[1]][[1]]$all.predictors))
+	names(res) <- object[[1]]$all.predictors
 	class(res) <- "table.mol.stability"
 	for (i in 1:k) {
-		res <- res + table.mol.stability(exhcv[[i]])
+		res <- res + table.mol.stability(object[[i]])
 	}
 	res/k
 }
 
-# table for a single search with several outputs
-table.mol.stability.exhlist <- function(exhlist) {
-	if (is.null(names(exhlist))) {
-		n.panels <- length(exhlist)
+
+#' @rdname table.mol.stability
+#' @export
+table.mol.stability.exhlist <- function(object, ...) {
+	if (is.null(names(object))) {
+		n.panels <- length(object)
 	}
 	else {
-		n.panels <- length(exhlist[names(exhlist)==""])
+		n.panels <- length(object[names(object)==""])
 	}
-	res <- rep(0, length(exhlist[[1]]$all.predictors))
-	names(res) <- exhlist[[1]]$all.predictors
+	res <- rep(0, length(object[[1]]$all.predictors))
+	names(res) <- object[[1]]$all.predictors
 	class(res) <- "table.mol.stability"
 	for (i in 1:n.panels) {
-		panel <- exhlist[[i]]
+		panel <- object[[i]]
 		res <- res + as.numeric(panel$all.predictors%in%names(panel$thresholds))
 	}
 	res/n.panels

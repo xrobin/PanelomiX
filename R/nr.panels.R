@@ -1,27 +1,34 @@
-# Number of panels
-
-nr.panels <- function(...) {
+#' Counts the number of panels found
+#' @param x the panels as an \code{exhlist}, single \code{exhcv} or \code{exhcvlist}
+#' @export
+nr.panels <- function(x) {
 	UseMethod("nr.panels")
 }
 
-nr.panels.exhlist <- function(exhlist, ...) {
-	if (is.null(names(exhlist)))
-		return(length(exhlist))
+#' @export
+#' @rdname nr.panels
+nr.panels.exhlist <- function(x) {
+	if (is.null(names(x)))
+		return(length(x))
 	else
-		return(length(exhlist[names(exhlist)==""]))
+		return(length(x[names(x)==""]))
 }
 
-nr.panels.exhcv <- function(exhcv, ...) {
+#' @export
+#' @rdname nr.panels
+nr.panels.exhcv <- function(x) {
 	tot <- 0
-	for (i in 1:length(exhcv))
-		tot <- tot + nr.panels(exhcv[[i]])
+	for (i in 1:length(x))
+		tot <- tot + nr.panels(x[[i]])
 	return(tot)
 }
 
-nr.panels.exhcvlist <- function(exhcvlist, ...) {
+#' @export
+#' @rdname nr.panels
+nr.panels.exhcvlist <- function(x) {
 	tot <- 0
-	for (i in 1:length(exhcvlist))
-		tot <- tot + nr.panels(exhcvlist[[i]])
+	for (i in 1:length(x))
+		tot <- tot + nr.panels(x[[i]])
 	return(tot)
 }
 

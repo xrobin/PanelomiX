@@ -1,11 +1,20 @@
-# Plot MDS (kind of PCA)
-plot.exh <- function(panel, newdata=NULL, xlab="First MDS dimension", ylab="Second MDS dimension", main="MDS on PRIM", ask = dev.interactive(), ...) {
+#' Plot the MDS of a panel
+#' @param x an train panel
+#' @param newdata the data to plot
+#' @param xlab,ylab,main labels for the plot
+#' @param ask ask to create new pages of the plot
+#' @param ... further arguments for \code{\link{plot}}
+#' @importFrom grDevices devAskNewPage dev.interactive
+#' @importFrom graphics abline legend plot
+#' @importFrom stats cmdscale dist na.omit
+#' @export 
+plot.exh <- function(x, newdata=NULL, xlab="First MDS dimension", ylab="Second MDS dimension", main="MDS on PRIM", ask = dev.interactive(), ...) {
 	if (ask) {
 		oask <- devAskNewPage(TRUE)
 		on.exit(devAskNewPage(oask))
 	}
-	predictors <- panel$panel
-	if (is.null(newdata)) data <- attr(panel, "exhlist")$train.data
+	predictors <- x$panel
+	if (is.null(newdata)) data <- attr(x, "exhlist")$train.data
 	else data <- newdata
 	#print(ifelse(is.null(newdata), , newdata))
 	#print(is.null(newdata))
@@ -16,10 +25,10 @@ plot.exh <- function(panel, newdata=NULL, xlab="First MDS dimension", ylab="Seco
 	d <- dist(dat)
 	mds <- cmdscale(d)
 	
-	col <- calcColors(data[[panel$response]], panel$levels)
+	col <- calcColors(data[[x$response]], x$levels)
 	pch <- 21
 	plot(mds[,1:2], type="p", xlab = xlab, ylab = ylab, col=col, pch=pch, main=main, ...)
-	legend("bottomright",legend=panel$levels, fill=c("green", "red"), title="Response")
+	legend("bottomright",legend=x$levels, fill=c("green", "red"), title="Response")
 	
 	for (i in 1:length(predictors)) {
 		for (j in i+1:length(predictors)) {
@@ -29,39 +38,43 @@ plot.exh <- function(panel, newdata=NULL, xlab="First MDS dimension", ylab="Seco
 			plot(dat[[predictors[i]]],dat[[predictors[j]]],
 				 col=col,pch=pch,
 				 xlab=predictors[i], ylab=predictors[j], log="xy", main="Markers 2 by 2")
-			abline(v=panel$thresholds[[i]])
-			abline(h=panel$thresholds[[j]])
+			abline(v=x$thresholds[[i]])
+			abline(h=x$thresholds[[j]])
 		}
 	}
 }
 
 
-# Plot diagnosis on cross validation
-plot.cv.diag <- function(panels.cv, data, training.panels) {
+#' Plot diagnosis on cross validation
+#' @param x the cross-validation of a panel (\code{\link{exh.train.cv}})
+#' @param data some data for the plot
+#' @param training.panels not sure about that one
+#' @param ... ignored
+#' @export plot.cv.diag
+#' @importFrom graphics par
+#' @rawNamespace S3method(plot, cv.diag)
+plot.cv.diag <- function(x, data, training.panels, ...) {
 	
 	par(mar=c(10, 4, 2, 0)+.1)
 	
-	#table.mol.stability(panels.cv)
-	ts <- table.mol.stability(panels.cv)
+	#table.mol.stability(x)
+	ts <- table.mol.stability(x)
 	plot(ts)
 	
-	#table.nr.stability(panels.cv)
-	plot(table.nr.stability(panels.cv))
+	#table.nr.stability(x)
+	plot(table.nr.stability(x))
 	
-	#table.min.nr.stability(panels.cv)
-	plot(table.min.nr.stability(panels.cv))
+	#table.min.nr.stability(x)
+	plot(table.min.nr.stability(x))
 	
-	plot.thr.stability(panels.cv, data)
-	
-	# ROC
-	suppressPackageStartupMessages(require(pROC, quietly=TRUE))
+	plot.thr.stability(x, data)
 	
 	training.pred <- predict(training.panels)
 	response <- training.panels[[1]]$train.data[[training.panels[[1]]$response]]
 	roc(response, training.pred, levels=training.panels[[1]]$levels, plot=TRUE, percent=TRUE)
 	
 	# CV ROC
-	cv.pred <- predict(panels.cv)
+	cv.pred <- predict(x)
 	roc(attr(cv.pred, "response"), cv.pred, levels=training.panels[[1]]$levels, plot=TRUE, percent=TRUE, add=TRUE, col="grey")
 	
 	# Single mols

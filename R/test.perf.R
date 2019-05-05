@@ -1,23 +1,28 @@
-# PERFORMANCE in SE and SP & ROC of the panels on the training and test sets
-
-test.perf <- function(...) {
+#' Performance on a test data set
+#' @description Calculates the fit on a test data.
+#' @param object the model
+#' @param newdata a \code{\link{data.frame}} containing the test data
+#' @param ... additional arguments to and from other methods
+#' @export
+test.perf <- function(object, ...) {
 	UseMethod("test.perf")
 }
 
-# function for a single exh - works for both train & test: pass as newdata.
-test.perf.exh <- function(exh, newdata=exh$test.data, ...) {
-	require(pROC)
-	p <- predict(exh, newdata, center=F)
-	roc <- roc(newdata[[exh$response]], p, levels=exh$levels, plot=F, ...)$AUC
-	perf <- perf(p[newdata[[exh$response]]==exh$levels[1]], p[newdata[[exh$response]]==exh$levels[2]], exh$min.nr, ">=")
+#' @rdname test.perf
+#' @export
+test.perf.exh <- function(object, newdata=object$test.data, ...) {
+	p <- predict(object, newdata, center=F)
+	roc <- roc(newdata[[object$response]], p, levels=object$levels, plot=F, ...)$AUC
+	perf <- perf(p[newdata[[object$response]]==object$levels[1]], p[newdata[[object$response]]==object$levels[2]], object$min.nr, ">=")
 	return(list("sensitivity"=perf$se,"specificity"=perf$sp, "auc"=roc))
 }
 
-
-test.perf.exhlist <- function(exhlist, ...) {
+#' @rdname test.perf
+#' @export
+test.perf.exhlist <- function(object, ...) {
 	se <- sp <- auc <- c()
-	for (i in 1:length(exhlist[names(exhlist)==""])) {
-		perf <- test.perf.exh(exhlist[[i]], newdata=exhlist$test.data, ...)
+	for (i in 1:length(object[names(object)==""])) {
+		perf <- test.perf.exh(object[[i]], newdata=object$test.data, ...)
 		se <- c(se, perf$se)
 		sp <- c(sp, perf$sp)
 		auc <- c(auc, perf$auc)
@@ -25,10 +30,12 @@ test.perf.exhlist <- function(exhlist, ...) {
 	return(list("sensitivity"=se,"specificity"=sp, "auc"=auc))
 }
 
-test.perf.exhcv <- function(exhcv, ...) {
+#' @rdname test.perf
+#' @export
+test.perf.exhcv <- function(object, ...) {
 	se <- sp <- auc <- c()
-	for (i in 1:length(exhcv)) {
-		perf <- test.perf(exhcv[[i]], ...)
+	for (i in 1:length(object)) {
+		perf <- test.perf(object[[i]], ...)
 		se <- c(se, mean(perf$se))
 		sp <- c(sp, mean(perf$sp))
 		auc <- c(auc, mean(perf$auc))
@@ -37,10 +44,12 @@ test.perf.exhcv <- function(exhcv, ...) {
 	return(list("sensitivity"=se,"specificity"=sp, "auc"=auc))
 }
 
-test.perf.exhcvlist <- function(exhcvlist, ...) {
+#' @rdname test.perf
+#' @export
+test.perf.exhcvlist <- function(object, ...) {
 	se <- sp <- auc <- c()
-	for (i in 1:length(exhcvlist)) {
-		mp <- test.perf(exhcvlist[[i]])
+	for (i in 1:length(object)) {
+		mp <- test.perf(object[[i]])
 		se <- c(se, mean(mp$se))
 		sp <- c(sp, mean(mp$sp))
 		auc <- c(auc, mean(mp$auc))

@@ -1,49 +1,55 @@
-# exh: the panel object
-# newdata: the data on which to test the panel
-# center: should the predicted values be centered around 0? If TRUE, returned values will be comprized between -1 and +1, with 0 as
-predict.exh <- function(exh, newdata=NULL, center=TRUE) {
+#' Model predictions
+#' @rdname predict
+#' @param object a model: \code{exh}, \code{exhlist}, \code{exhcv} or \code{exhcvlist}
+#' @param newdata some data to make the predictions
+#' @param center should the predicted values be centered around 0? If TRUE, returned values will be comprized between -1 and +1, with 0. Useful when multiple panels have a different \code{min.nr} and averaging them doesn't can't be done directly
+#' @param ... passing arguments to and from other methods
+#' @param statistics how to average
+#' @importFrom stats predict
+#' @export
+predict.exh <- function(object, newdata=NULL, center=TRUE, ...) {
 	if (is.null(newdata)) {
-		p <- exh.score4(exh$train.data[exh$panel], exh$thresholds, exh$direction)
-		#response <- exh$train.data[exh$response]
+		p <- exh.score4(object$train.data[object$panel], object$thresholds, object$direction)
 	}
 	else {
-		p <- exh.score4(newdata[exh$panel], exh$thresholds, exh$direction)
-		#response <- exh$train.data[exh$response]
+		p <- exh.score4(newdata[object$panel], object$thresholds, object$direction)
 	}
 	if (center) {
-		p <- p - (exh$min.nr)
-		p[p < 0] <- p[p < 0] / exh$min.nr
-		p[p > 0] <- p[p > 0] / (length(exh$thresholds) - (exh$min.nr))
+		p <- p - (object$min.nr)
+		p[p < 0] <- p[p < 0] / object$min.nr
+		p[p > 0] <- p[p > 0] / (length(object$thresholds) - (object$min.nr))
 	}
 	#attr(p, "response") <- response
 	return(p)
 }
 
-predict.exhlist <- function(exhlist, newdata=NULL, statistics=mean, ...) {
+#' @rdname predict
+#' @export
+predict.exhlist <- function(object, newdata=NULL, statistics=mean, ...) {
 	# filter exhlist. Store only exh in exhlist2. Sometimes there are named values that are not exh and that we don't want to analyze.
-	if (! is.null(names(exhlist)))
-		exhlist2 <- exhlist[names(exhlist)==""] # keep only the entries without a name: that are the exh!
+	if (! is.null(names(object)))
+		exhlist2 <- object[names(object)==""] # keep only the entries without a name: that are the exh!
 	else
-		exhlist2 <- exhlist
+		exhlist2 <- object
 	if (is.null(newdata) || is.na(newdata)) {
-		if (!is.null(exhlist$test.data)) {
+		if (!is.null(object$test.data)) {
 			# if there is a test.data, use this: can this code ever be reached? It seems more likely that there will always be a training data
-			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=exhlist$test.data, ...)), 1, statistics)
-			names(preds) <- rownames(exhlist$test.data)
+			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=object$test.data, ...)), 1, statistics)
+			names(preds) <- rownames(object$test.data)
 		}
-		else if (!is.null(exhlist[[1]]$test.data)) {
+		else if (!is.null(object[[1]]$test.data)) {
 			# if there is a test.data in the first exh?
-			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=exhlist[[1]]$test.data, ...)), 1, statistics)
-			names(preds) <- rownames(exhlist[[1]]$test.data)
+			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=object[[1]]$test.data, ...)), 1, statistics)
+			names(preds) <- rownames(object[[1]]$test.data)
 		}
-		else if (!is.null(exhlist$train.data)) {
+		else if (!is.null(object$train.data)) {
 			#otherwise use the train data
-			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=exhlist$train.data, ...)), 1, statistics)
-			names(preds) <- rownames(exhlist[[1]]$train.data)
+			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=object$train.data, ...)), 1, statistics)
+			names(preds) <- rownames(object[[1]]$train.data)
 		}
-		else if (!is.null(exhlist[[1]]$train.data)) { # try to find data in the first exh
-			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=exhlist[[1]]$train.data, ...)), 1, statistics)
-			names(preds) <- rownames(exhlist[[1]]$train.data)
+		else if (!is.null(object[[1]]$train.data)) { # try to find data in the first exh
+			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=object[[1]]$train.data, ...)), 1, statistics)
+			names(preds) <- rownames(object[[1]]$train.data)
 		}
 		else {
 			stop("No train.data, test.data or newdata. Unable to predict anything without data.")
@@ -57,30 +63,32 @@ predict.exhlist <- function(exhlist, newdata=NULL, statistics=mean, ...) {
 	return(preds)
 }
 
-predict.exhcv <- function(exhcv, ...) {
-	k <- length(exhcv)
+#' @rdname predict
+#' @export
+predict.exhcv <- function(object, ...) {
+	k <- length(object)
 	predictions <- ids <- c()
 	# as the number of values returned by predict for each exhcv[[i]] can vary, it seems unsafe to use a as.data.frame(lapply(...))
 	for (i in 1:k) {
-		predictions <- c(predictions, predict(exhcv[[i]], statistics=mean, ...))
-		#ids <- c(ids, as.character(exhcv[[i]]$test.data[,1]))
+		predictions <- c(predictions, predict(object[[i]], statistics=mean, ...))
 	}
-	#names(predictions) <- ids
 	return(predictions)
 }
 
-# Predict
-predict.exhcvlist <- function(exhcvlist, statistics=mean, ...) {
-	nreps <- length(exhcvlist)
+
+#' @rdname predict
+#' @export
+predict.exhcvlist <- function(object, statistics=mean, ...) {
+	nreps <- length(object)
 	predictions <- list()
 	for (reps in 1:nreps) {
-		p <- predict(exhcvlist[[reps]], ...)
+		p <- predict(object[[reps]], ...)
 		predictions[[reps]] <- p[order(names(p))]
 	}
 	predictions <- apply(as.data.frame(predictions), 1, statistics)
 	
 	# attach response as attribute
-	if (!is.null(attr(exhcvlist, "train.data"))) # sort predictions and attach response as attribute if possible
-		attr(predictions, "response") <- attr(exhcvlist, "train.data")[[exhcvlist[[1]][[1]][[1]]$response]][order(rownames(attr(exhcvlist, "train.data")))]
+	if (!is.null(attr(object, "train.data"))) # sort predictions and attach response as attribute if possible
+		attr(predictions, "response") <- attr(object, "train.data")[[object[[1]][[1]][[1]]$response]][order(rownames(attr(object, "train.data")))]
 	return(predictions)
 }

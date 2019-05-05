@@ -8,7 +8,7 @@
 #' @param levels the values of \code{response} to use as negative and positive data
 #' @param panels.of.num a vector of integer, defining the acceptable number of markers included in the panel
 #' @param test.thresholds the thresholds to test. Ignored if filter.randomForest is a list
-#' @param directions a named list (after the \code{predictors} and \code{fixed.predictors}) of directions as described in \code{\link{pROC::roc}}
+#' @param directions a named list (after the \code{predictors} and \code{fixed.predictors}) of directions as described in \code{\link[pROC]{roc}}
 #' @param filter.number.thresholds if \code{TRUE}, filter the \code{test.thresholds} to speed up the search. Ignored if filter.randomForest is a list. Can be the character \dQuote{2x2} or a numeric (length 1)
 #' @param filter.randomForest a \code{\link{list}} with 2 elements: \code{molecules} (number of markers to keep) \code{thresholds} (number of thresholds to keep per marker)
 #' @param verbose enables additional output for debugging
@@ -21,6 +21,11 @@
 #' data(aSAH, package="pROC")
 #' exh.train(aSAH, c("age", "s100b", "ndka"), "outcome")
 #' @export
+#' @import pROC
+#' @import randomForest
+#' @import methods
+#' @importFrom stats as.formula na.omit
+#' @importFrom utils combn read.csv write.csv
 exh.train <- function(data, predictors, response,
 					  fixed.predictors=NULL,
 					  id=NULL,
@@ -54,7 +59,6 @@ exh.train <- function(data, predictors, response,
 	if (any(is.na(data))) {
 		return(NA)
 	}
-	#  require(gtools) # function combinations - not used anymore
 	exh <- list()
 	class(exh) <- "exh"
 	exh$time.start <- Sys.time()
@@ -93,10 +97,6 @@ exh.train <- function(data, predictors, response,
 		directions <- list()
 	}
 	if (any(sapply(directions[all.predictors], is.null))) {
-		if (!interactive())
-			suppressPackageStartupMessages(library(pROC, quietly = TRUE))
-		else 
-			require(pROC, quietly = TRUE)
 		for (predictor in all.predictors) {
 			if (!is.numeric(data[[predictor]])) {
 				stop("All predictor columns must be numeric")
@@ -112,11 +112,6 @@ exh.train <- function(data, predictors, response,
 	### Now determine the thresholds ###
 	# Filter with randomForest
 	if (is.list(filter.randomForest)) {
-		if (!interactive())
-			suppressPackageStartupMessages(library(randomForest))
-		else 
-			require(randomForest, quietly = TRUE)
-		
 		# Filter by random forest
 		# Create the class weights for RF
 		classwt <- if (constrain.on == "specificity") {c(min.constr, 1 - min.constr)} else if (constrain.on == "sensitivity") {c(1 - min.constr, min.constr)}
@@ -196,7 +191,6 @@ exh.train <- function(data, predictors, response,
 				num.thresholds.for.this.pred <- length(possible.thresholds[[pred]])
 				if (filter.number.thresholds < num.thresholds.for.this.pred) {
 					# determine n intervals and find the best threshold inside each interval
-					require(pROC)
 					r <- roc(data[[response]], data[[pred]], levels=levels, plot=FALSE)
 					stop("Sorry the ROC part seems to be buggy and needs to be rewritten")
 					sq <- sort(rep(c(1:filter.number.thresholds), length.out=length(r$SES))) # determine the regions

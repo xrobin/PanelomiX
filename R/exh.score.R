@@ -1,34 +1,4 @@
-# data: data frame with data (predictors vectors only)
-# thresholds: thresholds for predictors
-# Return value: an integer vector of scores
-#exh.score <- function(data, thresholds) {
-#  s <- rep(0, length(data[,1]))
-#  mol.scores <- data>thresholds # WRONG? when called from outside exh.test
-#  for(i in 1:length(data[,1])) {
-#    #s[i] <- sum(data[i,]>thresholds)
-#    s[i] <- sum(mol.scores[i,]) # WRONG? when called from outside exh.test
-#  }
-#  return(s)
-#}
-#exh.score2 <- function(data, thresholds) { # Cleaner (no loop) but slower # WRONG
-#  mol.scores <- data>thresholds
-#  apply(mol.scores, 1, sum)
-#}
-# to be used from outside exh.test...
-## WARNING: exh.score3 does only work when all directions are >.
-## Please switch to exh.score4 that should handle directions < correctly too.
-#exh.score3 <- function(data, thresholds, direction) {
-#  s <- rep(0, length(data[,1]))
-#  # Take data opposite for markers with direction == "<"
-#  data[,direction == "<"] <- - data[,direction == "<"]
-#  thresholds[direction == "<"] <- - thresholds[direction == "<"]
-#  
-#  for(i in 1:length(data[,1])) {
-#    s[i] <- sum(data[i,]>thresholds)
-#  }
-#  return(s)
-#}
-
+# Used by predict
 
 exh.score3gt <- function(data, thresholds) {
 	s <- rep(0, length(data[,1]))

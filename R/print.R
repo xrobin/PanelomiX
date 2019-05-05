@@ -1,3 +1,10 @@
+#' Prints a panel
+#' @rdname print
+#' @param x the panel: \code{exh}, \code{exhlist}, \code{exhcv} or \code{exhcvlist}
+#' @param file if the empty string \dQuote{}, prints on the R output
+#' @param append whether to erase the file before printing. See \code{\link{cat}}
+#' @param ... additional arguments passed from and to other methods
+#' @export
 print.exhlist <- function(x, file="", append=FALSE, ...) {
 	if (!is.null(names(x))) {
 		x <- x[names(x)==""]
@@ -13,6 +20,8 @@ print.exhlist <- function(x, file="", append=FALSE, ...) {
 	}
 }
 
+#' @rdname print
+#' @export
 print.exhcvlist <- function(x, file="", append=FALSE, ...) {
 	cat("", file=file, append=append)
 	cat(length(x), "x", length(x[[1]]), "-fold cross-validation\n", sep="", file=file, append=append)
@@ -20,6 +29,8 @@ print.exhcvlist <- function(x, file="", append=FALSE, ...) {
 	print.exh.timing(x, file=file, append=TRUE)
 }
 
+#' @rdname print
+#' @export
 print.exhcv <- function(x, file="", append=FALSE, ...) {
 	cat("", file=file, append=append)
 	cat(length(x), "-fold cross-validation\n", sep="", file=file, append=append)
@@ -27,7 +38,9 @@ print.exhcv <- function(x, file="", append=FALSE, ...) {
 	print.exh.timing(x, file=file, append=TRUE)
 }
 
-print.exh <- function(x, file = "", append = FALSE) {
+#' @rdname print
+#' @export
+print.exh <- function(x, file = "", append = FALSE, ...) {
 	print.exh.params(x, file=file, append=TRUE)
 	print.exh.timing(x, file=file, append=TRUE)
 	print.exh.iterations(x, file=file, append=TRUE)

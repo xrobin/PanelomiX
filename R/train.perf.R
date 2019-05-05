@@ -1,32 +1,39 @@
-# Generic train.perf
+#' Performance on the training data
+#' @description Calculates the fit on the training data. See \code{\link{test.perf}} to test the fit on a new data set
+#' @param object the model
+#' @param ... additional arguments to and from other methods
+#' @export
 train.perf <- function(...) {
 	UseMethod("train.perf")
 }
 
-# function for a single exh - works for both train & test: pass as newdata.
-train.perf.exh <- function(exh, ...) {
-	newdata <- exh$test.data
-	p <- predict(exh, newdata, center=F)
-	roc <- roc(newdata[[exh$response]], p, levels=exh$levels, plot=F, ...)$AUC
-	perf <- perf(p[newdata[[exh$response]]==exh$levels[1]], p[newdata[[exh$response]]==exh$levels[2]], exh$min.nr, ">=")
+#' @rdname train.perf
+#' @export
+train.perf.exh <- function(object, ...) {
+	newdata <- object$test.data
+	p <- predict(object, newdata, center=F)
+	roc <- roc(newdata[[object$response]], p, levels=object$levels, plot=F, ...)$AUC
+	perf <- perf(p[newdata[[object$response]]==object$levels[1]], p[newdata[[object$response]]==object$levels[2]], object$min.nr, ">=")
 	return(list("sensitivity"=perf$se,"specificity"=perf$sp, "auc"=roc))
 }
 
-train.perf.exhlist <- function(exhlist, ...) {
+#' @rdname train.perf
+#' @export
+train.perf.exhlist <- function(object, ...) {
 	se <- sp <- auc <- c()
-	if (is.null(names(exhlist)))
-		length <- length(exhlist)
+	if (is.null(names(object)))
+		length <- length(object)
 	else
-		length <- length(exhlist[names(exhlist)==""])
+		length <- length(object[names(object)==""])
 	for (i in 1:length) {
-		if (is.null(exhlist$train.data)) {
-			perf <- test.perf.exh(exhlist[[i]], newdata=exhlist[[1]]$train.data, ...)
+		if (is.null(object$train.data)) {
+			perf <- test.perf.exh(object[[i]], newdata=object[[1]]$train.data, ...)
 			se <- c(se, perf$se)
 			sp <- c(sp, perf$sp)
 			auc <- c(auc, perf$auc)
 		}
 		else {
-			perf <- perf.exh(exhlist[[i]], newdata=exhlist$train.data, ...)
+			perf <- test.perf.exh(object[[i]], newdata=object$train.data, ...)
 			se <- c(se, perf$se)
 			sp <- c(sp, perf$sp)
 			auc <- c(auc, perf$auc)
@@ -35,10 +42,12 @@ train.perf.exhlist <- function(exhlist, ...) {
 	return(list("sensitivity"=se,"specificity"=sp, "auc"=auc))
 }
 
-train.perf.exhcv <- function(exhcv, ...) {
+#' @rdname train.perf
+#' @export
+train.perf.exhcv <- function(object, ...) {
 	se <- sp <- auc <- c()
-	for (i in 1:length(exhcv)) {
-		perf <- train.perf(exhcv[[i]], ...)
+	for (i in 1:length(object)) {
+		perf <- train.perf(object[[i]], ...)
 		se <- c(se, mean(perf$se))
 		sp <- c(sp, mean(perf$sp))
 		auc <- c(auc, mean(perf$auc))
@@ -47,10 +56,12 @@ train.perf.exhcv <- function(exhcv, ...) {
 	return(list("sensitivity"=se,"specificity"=sp, "auc"=auc))
 }
 
-train.perf.exhcvlist <- function(exhcvlist, ...) {
+#' @rdname train.perf
+#' @export
+train.perf.exhcvlist <- function(object, ...) {
 	se <- sp <- auc <- c()
-	for (i in 1:length(exhcvlist)) {
-		mp <- train.perf(exhcvlist[[i]])
+	for (i in 1:length(object)) {
+		mp <- train.perf(object[[i]])
 		se <- c(se, mean(mp$se))
 		sp <- c(sp, mean(mp$sp))
 		auc <- c(auc, mean(mp$auc))

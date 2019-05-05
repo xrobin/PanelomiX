@@ -6,8 +6,8 @@
 #' @param response the binary response column name
 #' @param id the name of a column storing unique IDs for the observations
 #' @param fixed.predictors predictors to force into the panel
-#' @param id a column with sample ids
 #' @param levels the values of \code{response} to use as negative and positive data
+#' @param na.rm whether to omit rows with \code{NA} observations
 #' @param nreps number of cross-validation repeats
 #' @param k number of folds of the cross-validation (use \code{k = nrow(data)}) for leave-one-out CV
 #' @param stratified whether to keep the balance of positive/negative samples in all the CV folds
@@ -15,6 +15,7 @@
 #' @param working.dir,java.keep.files same as for \code{\link{exh.train}}
 #' @param ... further arguments passed to \code{\link{exh.train}}. \code{constrain.on}, \code{min.constr}, \code{panels.of.num} or \code{limit.java.threads} are probably the most useful ones.
 #' @export
+#' @importFrom stats na.omit runif
 #' @examples 
 #' data(aSAH, package="pROC")
 #' exh.train.cv(aSAH, c("age", "s100b", "ndka"), "outcome")

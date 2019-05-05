@@ -1,8 +1,16 @@
-plot.thr.stability <- plot.thr.stability <- function(...) {
+#' Plots the stability of thresholds over cross-validation
+#' @param x the panels as an \code{exhlist}, single \code{exhcv} or \code{exhcvlist}
+#' @param data data to be plotted
+#' @param found.mols the vector of molecules that were found. Automatically extracted from \code{x} unless provided
+#' @param add whether to just add to the plot
+#' @param plot whether to actually plot that part
+#' @param ... additional arguments to \code{\link{plot}}
+#' @importFrom graphics axis barplot box legend par plot points
+#' @rawNamespace S3method(plot, thr.stability)
+#' @export plot.thr.stability
+plot.thr.stability <- function(...) {
 	UseMethod("plot.thr.stability")
 }
-
-# plot: a logical
 
 plot.new.thr.stability <- function(found.mols, data, main="Panel thresholds", exhobject=NULL, smart.mol.list=NULL, legend=TRUE, ...) {
 	opa <- par(las=3)
@@ -20,39 +28,42 @@ plot.new.thr.stability <- function(found.mols, data, main="Panel thresholds", ex
 	par(opa)
 }
 
-plot.thr.stability.exhlist <- function(exhlist, data=NULL, found.mols=NULL, add=FALSE, plot=TRUE, ...) {
+#' @rdname plot.thr.stability
+#' @method plot.thr.stability exhlist
+#' @export
+plot.thr.stability.exhlist <- function(x, data=NULL, found.mols=NULL, add=FALSE, plot=TRUE, ...) {
 	if (is.null(found.mols)) {
-		found.mols <- table.mol.stability(exhlist)
+		found.mols <- table.mol.stability(x)
 		found.mols <- found.mols[found.mols>0]
 		found.mols <- sort(found.mols, decreasing=TRUE)
 	}
 	if (is.null(data)) {
-		if (is.null(exhlist$train.data)) {
-			if (is.null(exhlist[1]$train.data)) {
+		if (is.null(x$train.data)) {
+			if (is.null(x[1]$train.data)) {
 				stop("No data found in plot.thr.stability.exhlist")
 			}
 			else {
-				data <- exhlist[[1]]$train.data
+				data <- x[[1]]$train.data
 			}
 		}
 		else {
-			data <- exhlist$train.data
+			data <- x$train.data
 		}
 	}
 	if (!add) {
-		plot.new.thr.stability(found.mols, data, exhobject=exhlist, ...)
+		plot.new.thr.stability(found.mols, data, exhobject=x, ...)
 	}
 	if (plot) {
 		# Filter exhlist so that we do not have training.data and test.data
-		if (is.null(names(exhlist))) {
-			n.panels <- length(exhlist)
+		if (is.null(names(x))) {
+			n.panels <- length(x)
 		}
 		else {
-			n.panels <- length(exhlist[names(exhlist)==""])
+			n.panels <- length(x[names(x)==""])
 		}
 		# Plot the line for each panel
 		for (i in 1:n.panels) {
-			panel <- exhlist[[i]]
+			panel <- x[[i]]
 			x <- y <- c()
 			for (j in 1:length(names(panel$thresholds))) {
 				y <- c(y, floor(rank(c(panel$thresholds[j], data[[names(panel$thresholds)[j]]])))[1])
@@ -64,36 +75,42 @@ plot.thr.stability.exhlist <- function(exhlist, data=NULL, found.mols=NULL, add=
 	}
 }
 
-plot.thr.stability.exhcv <- function(exhcv, data, found.mols=NULL, add=FALSE, plot=TRUE, ...) {
+#' @rdname plot.thr.stability
+#' @method plot.thr.stability exhcv
+#' @export
+plot.thr.stability.exhcv <- function(x, data, found.mols=NULL, add=FALSE, plot=TRUE, ...) {
 	if (is.null(found.mols)) {
-		found.mols <- table.mol.stability(exhcv)
+		found.mols <- table.mol.stability(x)
 		found.mols <- found.mols[found.mols>0]
 		found.mols <- sort(found.mols, decreasing=TRUE)
 	}
 	if (!add) {
-		plot.new.thr.stability(found.mols, data, exhobject=exhcv, ...)
+		plot.new.thr.stability(found.mols, data, exhobject=x, ...)
 	}
 	if (plot) {
-		k <- length(exhcv)
+		k <- length(x)
 		for (i in 1:k) {
-			plot.thr.stability(exhcv[[i]], data=data, found.mols=found.mols, add=TRUE, ...)
+			plot.thr.stability(x[[i]], data=data, found.mols=found.mols, add=TRUE, ...)
 		}
 	}
 }
 
-plot.thr.stability.exhcvlist <- function(exhcvlist, data, found.mols=NULL, add=FALSE, plot=TRUE, ...) {
+#' @rdname plot.thr.stability
+#' @method plot.thr.stability exhcvlist
+#' @export
+plot.thr.stability.exhcvlist <- function(x, data, found.mols=NULL, add=FALSE, plot=TRUE, ...) {
 	if (is.null(found.mols)) {
-		found.mols <- table.mol.stability(exhcvlist)
+		found.mols <- table.mol.stability(x)
 		found.mols <- found.mols[found.mols>0]
 		found.mols <- sort(found.mols, decreasing=TRUE)
 	}
 	if (!add) {
-		plot.new.thr.stability(found.mols, data, exhobject=exhcvlist, ...)
+		plot.new.thr.stability(found.mols, data, exhobject=x, ...)
 	}
 	if (plot) {
-		nreps <- length(exhcvlist)
+		nreps <- length(x)
 		for (rep in 1:nreps) {
-			plot.thr.stability(exhcvlist[[rep]], data=data, found.mols=found.mols, add=TRUE, ...)
+			plot.thr.stability(x[[rep]], data=data, found.mols=found.mols, add=TRUE, ...)
 		}
 	}
 }

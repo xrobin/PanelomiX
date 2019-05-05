@@ -65,7 +65,7 @@ filter.thresholds.randomForest <- function(rfmodel,
 		}
 		obs.levels <- unique(threshs[[mol]])
 		# This is the slow step – coords with 1000 levels takes about 1s
-		obs.thresholds <- pROC::coords.roc(pROC::roc(data[[response]], data[[mol]], levels=levels), obs.levels, drop=FALSE)
+		obs.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels), obs.levels, drop=FALSE)
 		
 		# Match each observed with a target using euclidian distance
 		matches <- target.thresholds[1,sapply(1:ncol(obs.thresholds), match.thresh.euclidian, obs.thresholds=obs.thresholds, target.thresholds=target.thresholds)]
