@@ -2,6 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{predict.exh}
 \alias{predict.exh}
+\alias{predict}
 \alias{predict.exhlist}
 \alias{predict.exhcv}
 \alias{predict.exhcvlist}

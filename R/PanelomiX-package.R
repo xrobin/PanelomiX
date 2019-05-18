@@ -5,6 +5,15 @@
 #' @description This package implements the R command line interface for PanelomiX.
 #' You can create panels, run cross-validation, much like with the web interface at 
 #' \url{https://www.panelomix.net/}, but with more flexibiliy.
+#' @section Citation:
+#' If you use PanelomiX in published research, please cite the following paper:
+#' 
+#' Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti,
+#' Frédérique Lisacek, Jean-Charles Sanchez and Markus Müller (2011).
+#' PanelomiX: A threshold-based algorithm to create panels of biomarkers. 
+#' Translational Proteomics, 1(1), p. 57-64.
+#' DOI: \href{http://dx.doi.org/10.1016/j.trprot.2013.04.003}{10.1016/j.trprot.2013.04.003}"
+#' Type \code{citation("PanelomiX")} for a BibTeX entry.
 #' @section Main Functions:
 #' \tabular{rl}{
 #' Training      \tab \code{\link{exh.train}} \cr

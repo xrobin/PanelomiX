@@ -1,5 +1,6 @@
 #' Model predictions
 #' @rdname predict
+#' @aliases predict
 #' @param object a model: \code{exh}, \code{exhlist}, \code{exhcv} or \code{exhcvlist}
 #' @param newdata some data to make the predictions
 #' @param center should the predicted values be centered around 0? If TRUE, returned values will be comprized between -1 and +1, with mean 0. Useful when multiple panels have a different \code{min.nr} and averaging them doesn't can't be done directly
