@@ -23,3 +23,8 @@ table.mol.stability(object, ...)
 \description{
 Frequency of the choice of molecules
 }
+\examples{
+data(aSAH, package = "pROC")
+cv <- exh.train.cv(aSAH, c("age", "s100b", "ndka"), "outcome", progress=FALSE)
+table.mol.stability(cv)
+}

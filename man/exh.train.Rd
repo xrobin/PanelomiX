@@ -56,6 +56,9 @@ exh.train(data, predictors, response, fixed.predictors = NULL,
 
 \item{...}{additional arguments passed from and to other methods. In particular, further arguments for to \code{\link[pROC]{roc}}.}
 }
+\value{
+a list (class \code{exhlist}) with one or more panels (class \code{exh})
+}
 \description{
 Train a panel with the new java interface
 }

@@ -21,7 +21,7 @@
 
 \item{newdata}{some data to make the predictions}
 
-\item{center}{should the predicted values be centered around 0? If TRUE, returned values will be comprized between -1 and +1, with 0. Useful when multiple panels have a different \code{min.nr} and averaging them doesn't can't be done directly}
+\item{center}{should the predicted values be centered around 0? If TRUE, returned values will be comprized between -1 and +1, with mean 0. Useful when multiple panels have a different \code{min.nr} and averaging them doesn't can't be done directly}
 
 \item{...}{passing arguments to and from other methods}
 
@@ -29,4 +29,9 @@
 }
 \description{
 Model predictions
+}
+\examples{
+data(aSAH, package = "pROC")
+panels <- exh.train(aSAH, c("age", "s100b", "ndka"), "outcome", progress=FALSE)
+predict(panels, aSAH)
 }
