@@ -1,13 +1,13 @@
 Package: PanelomiX
 Type: Package
 Title: Combine Biomarkers with Thresholds
-Version: 0.0.2
+Version: 0.0.3
 Date: 2019-05-05
 Encoding: UTF-8
 Imports: pROC, rJava, methods, stringr
 Suggests: randomForest
 Author: Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti, Frédérique Lisacek, Jean-Charles Sanchez and Markus Müller
-Maintainer: Xavier Robin <xavier@panelomix.net>
+Maintainer: Xavier Robin <xavalias-panelomixpackage@panelomix.net>
 Description: Tools for combining biomarkers with a threshold approach. Visualizations.
 License: GPL (>= 3)
 URL: http://panelomix.net/
