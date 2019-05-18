@@ -11,7 +11,7 @@ print.exhlist <- function(x, file="", append=FALSE, ...) {
 	}
 	cat("", file=file, append=append)
 	print.exh.params(x[[1]], file=file, append=TRUE)
-	print.exh.timing(x[[1]], file=file, append=TRUE)
+	print.exh.timing(x, file=file, append=TRUE)
 	print.exh.iterations(x[[1]], file=file, append=TRUE)
 	print.exh.perf(x[[1]], file=file, append=TRUE)
 	for(i in 1:length(x)) {
@@ -64,8 +64,8 @@ print.exh.iterations <- function(x, file = "", append = FALSE) {
 
 
 print.exh.timing <- function(x, file = "", append = FALSE) {
-	diff <- x$time.end - x$time.start
-	time.end <- x$time.end
+	diff <- attr(x, "time.end") - attr(x, "time.start.r")
+	time.end <- attr(x, "time.end")
 	if (length(diff) == 0) { # cas of exhcvlist & exhcv objects
 		diff <- attr(x, "time.end") - attr(x, "time.start")
 		time.end <- attr(x, "time.end")
