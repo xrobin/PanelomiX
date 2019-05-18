@@ -1,4 +1,5 @@
 #' Train a panel with the new java interface
+#' @return a list (class \code{exhlist}) with one or more panels (class \code{exh})
 #' @param data the dataset
 #' @param predictors the name of the columns to be tested as predictors in the panel. May or may not be used.
 #' @param response the binary response column name
@@ -382,6 +383,8 @@ exh.train <- function(data, predictors, response,
   attr(panels, "levels") <- exh$levels
   attr(panels, "predictors") <- exh$predictors
   attr(panels, "possible.thresholds") <- exh$possible.thresholds
+  attr(panels, "all.predictors") <- exh$all.predictors
+  attr(panels, "fixed.predictors") <- exh$fixed.predictors
   attr(panels, "nr.patients") <- exh$nr.patients
   attr(panels, "panels.of.num") <- exh$panels.of.num
   attr(panels, "constrain.on") <- exh$constrain.on
