@@ -1,0 +1,12 @@
+language: r
+cache: packages
+warnings_are_errors: true
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
+
+# Ubuntu 14.04 Trusty support with GCC 4.8
+dist: trusty
