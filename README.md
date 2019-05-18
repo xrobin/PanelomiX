@@ -13,6 +13,8 @@ Experimental
 
 This package is highly experimental. For an easier experience please use [the web-based tool](https://www.panelomix.net/).
 Functions and arguments may change at any time and without notice. Functionality is not guaranteed.
+Feel free to report bugs on the bug tracker. However this project is no longer under active development, and support and
+bug fixes are not guaranteed.
 
 To install this package:
 
