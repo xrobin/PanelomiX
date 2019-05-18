@@ -36,7 +36,7 @@ predict.exhlist <- function(object, newdata=NULL, statistics=mean, ...) {
 		exhlist2 <- object[names(object)==""] # keep only the entries without a name: that are the exh!
 	else
 		exhlist2 <- object
-	if (is.null(newdata) || is.na(newdata)) {
+	if (is.null(newdata)) {
 		if (!is.null(object$test.data)) {
 			# if there is a test.data, use this: can this code ever be reached? It seems more likely that there will always be a training data
 			preds <- apply(as.data.frame(lapply(exhlist2, predict, newdata=object$test.data, ...)), 1, statistics)
