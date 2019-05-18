@@ -2,10 +2,14 @@
 #' @rdname predict
 #' @param object a model: \code{exh}, \code{exhlist}, \code{exhcv} or \code{exhcvlist}
 #' @param newdata some data to make the predictions
-#' @param center should the predicted values be centered around 0? If TRUE, returned values will be comprized between -1 and +1, with 0. Useful when multiple panels have a different \code{min.nr} and averaging them doesn't can't be done directly
+#' @param center should the predicted values be centered around 0? If TRUE, returned values will be comprized between -1 and +1, with mean 0. Useful when multiple panels have a different \code{min.nr} and averaging them doesn't can't be done directly
 #' @param ... passing arguments to and from other methods
 #' @param statistics how to average
 #' @importFrom stats predict
+#' @examples
+#' data(aSAH, package = "pROC")
+#' panels <- exh.train(aSAH, c("age", "s100b", "ndka"), "outcome", progress=FALSE)
+#' predict(panels, aSAH)
 #' @export
 predict.exh <- function(object, newdata=NULL, center=TRUE, ...) {
 	if (is.null(newdata)) {
