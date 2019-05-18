@@ -1,6 +1,10 @@
 #' Frequency of the number of molecules included 
 #' @param object the panel model
 #' @param ... additional arguments to and from other methods
+#' @examples 
+#' data(aSAH, package = "pROC")
+#' cv <- exh.train.cv(aSAH, c("age", "s100b", "ndka"), "outcome", progress=FALSE)
+#' table.nr.stability(cv)
 #' @export
 table.nr.stability <- function(object, ...) {
 	UseMethod("table.nr.stability")
@@ -10,8 +14,9 @@ table.nr.stability <- function(object, ...) {
 #' @export
 table.nr.stability.exhcvlist  <- function(object, ...) {
 	nreps <- length(object)
-	nrs <- rep(0, length(object[[1]][[1]][[1]]$panels.of.num))
-	names(nrs) <- object[[1]][[1]][[1]]$panels.of.num
+	panels.of.num <- attr(object[[1]][[1]], "panels.of.num")
+	nrs <- rep(0, length(panels.of.num))
+	names(nrs) <- panels.of.num
 	class(nrs) <- "table.nr.stability"
 	for (reps in 1:nreps) {
 		nrs <- nrs + table.nr.stability(object[[reps]])
@@ -23,8 +28,9 @@ table.nr.stability.exhcvlist  <- function(object, ...) {
 #' @export
 table.nr.stability.exhcv  <- function(object, ...) {
 	k <- length(object)
-	nrs <- rep(0, length(object[[1]][[1]]$panels.of.num))
-	names(nrs) <- object[[1]][[1]]$panels.of.num
+	panels.of.num <- attr(object[[1]], "panels.of.num")
+	nrs <- rep(0, length(panels.of.num))
+	names(nrs) <- panels.of.num
 	class(nrs) <- "table.nr.stability"
 	for (i in 1:k) {
 		nrs <- nrs + table.nr.stability(object[[i]])
@@ -41,8 +47,9 @@ table.nr.stability.exhlist <- function(object, ...) {
 	else {
 		n.panels <- length(object[names(object)==""])
 	}
-	nrs <- rep(0, length(object[[1]]$panels.of.num))
-	names(nrs) <- object[[1]]$panels.of.num
+	panels.of.num <- attr(object,"panels.of.num")
+	nrs <- rep(0, length(panels.of.num))
+	names(nrs) <- panels.of.num
 	class(nrs) <- "table.nr.stability"
 	for (i in 1:n.panels) {
 		panel <- object[[i]]

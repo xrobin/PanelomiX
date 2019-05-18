@@ -23,3 +23,8 @@ table.min.nr.stability(object, ...)
 \description{
 Frequency of the number of molecules required for a positive test
 }
+\examples{
+data(aSAH, package = "pROC")
+cv <- exh.train.cv(aSAH, c("age", "s100b", "ndka"), "outcome", progress=FALSE)
+table.min.nr.stability(cv)
+}

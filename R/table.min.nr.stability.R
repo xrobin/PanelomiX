@@ -1,6 +1,10 @@
 #' Frequency of the number of molecules required for a positive test 
 #' @param object the panel model
 #' @param ... additional arguments to and from other methods
+#' @examples 
+#' data(aSAH, package = "pROC")
+#' cv <- exh.train.cv(aSAH, c("age", "s100b", "ndka"), "outcome", progress=FALSE)
+#' table.min.nr.stability(cv)
 #' @export
 table.min.nr.stability <- function(object, ...) {
 	UseMethod("table.min.nr.stability")
@@ -10,11 +14,9 @@ table.min.nr.stability <- function(object, ...) {
 #' @export
 table.min.nr.stability.exhcvlist  <- function(object, ...) {
 	nreps <- length(object)
-	#nrs <- rep(0, length(exhcvlist[[1]][[1]][[1]]$panels.of.num))
-	#names(nrs) <- exhcvlist[[1]][[1]][[1]]$panels.of.num
-	# Old weird version: why did I do that??? Now do it correctly
-	nrs <- rep(0, max(object[[1]][[1]][[1]]$panels.of.num))
-	names(nrs) <- seq(1, max(object[[1]][[1]][[1]]$panels.of.num))
+	panels.of.num <- attr(object[[1]][[1]], "panels.of.num")
+	nrs <- rep(0, max(panels.of.num))
+	names(nrs) <- seq(1, max(panels.of.num))
 	class(nrs) <- "table.min.nr.stability"
 	for (reps in 1:nreps) {
 		nrs <- nrs + table.min.nr.stability(object[[reps]])
@@ -26,11 +28,9 @@ table.min.nr.stability.exhcvlist  <- function(object, ...) {
 #' @export
 table.min.nr.stability.exhcv  <- function(object, ...) {
 	k <- length(object)
-	#nrs <- rep(0, length(exhcv[[1]][[1]]$panels.of.num))
-	#names(nrs) <- exhcv[[1]][[1]]$panels.of.num
-	# Old weird version: why did I do that??? Now do it correctly
-	nrs <- rep(0, max(object[[1]][[1]]$panels.of.num))
-	names(nrs) <- seq(1, max(object[[1]][[1]]$panels.of.num))
+	panels.of.num <- attr(object[[1]], "panels.of.num")
+	nrs <- rep(0, max(panels.of.num))
+	names(nrs) <- seq(1, max(panels.of.num))
 	class(nrs) <- "table.min.nr.stability"
 	for (i in 1:k) {
 		nrs <- nrs + table.min.nr.stability(object[[i]])
@@ -47,8 +47,9 @@ table.min.nr.stability.exhlist <- function(object, ...) {
 	else {
 		n.panels <- length(object[names(object)==""])
 	}
-	nrs <- rep(0, max(object[[1]]$panels.of.num))
-	names(nrs) <- seq(1, max(object[[1]]$panels.of.num))
+	panels.of.num <- attr(object, "panels.of.num")
+	nrs <- rep(0, max(panels.of.num))
+	names(nrs) <- seq(1, max(panels.of.num))
 	class(nrs) <- "table.min.nr.stability"
 	for (i in 1:n.panels) {
 		panel <- object[[i]]
