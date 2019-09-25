@@ -22,7 +22,7 @@ To install this package:
 
 ```R
     if (! requireNamespace("devtools")) install.packages("devtools")
-    devtools::install_github("PanelomiX")
+    devtools::install_github("xrobin/PanelomiX")
 ```
 
 Help
