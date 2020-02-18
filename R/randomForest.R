@@ -56,8 +56,8 @@ filter.thresholds.randomForest <- function(rfmodel,
 	ret <- list()
 	for (mol in molecules) {
 		# Get target and observed thresholds
-		target.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels), "l", drop=FALSE)
-		target.thresholds <- target.thresholds[,is.finite(target.thresholds[1,]), drop=FALSE] # remove Inf and -Inf
+		target.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels), "l", drop=FALSE, transpose = FALSE)
+		target.thresholds <- target.thresholds[is.finite(target.thresholds$threshold),, drop=FALSE] # remove Inf and -Inf
 		# Make sure the is.finite() test didn't remove everything.
 		# If it is the case, die with a clear message.
 		if (dim(target.thresholds)[2] < 1) {
