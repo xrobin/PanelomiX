@@ -29,6 +29,7 @@
 #' @import rJava
 #' @importFrom stats as.formula na.omit
 #' @importFrom utils combn read.csv write.csv
+#' @importFrom R.utils getAbsolutePath
 exh.train <- function(data, predictors, response,
                       fixed.predictors = NULL,
                       id = NULL,
@@ -310,11 +311,11 @@ exh.train <- function(data, predictors, response,
     remove.tmp.dir.after <- TRUE
     working.dir <- tempfile("PanelomiX_")
   }
-  
-  # make sure the path is absolute
-  if (!grepl("^/", working.dir)) {
-    working.dir <- file.path(getwd(), working.dir)
+  else {
+    # make sure the path is absolute
+    working.dir <- getAbsolutePath(working.dir)
   }
+  
   dir.create(working.dir, showWarnings = FALSE, recursive = TRUE)
   if (verbose) {
   	message(paste0("Creating temporary file in ", working.dir, "."))
