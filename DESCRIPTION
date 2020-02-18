@@ -4,7 +4,7 @@ Title: Combine Biomarkers with Thresholds
 Version: 0.0.3
 Date: 2019-05-05
 Encoding: UTF-8
-Imports: pROC (>= 1.15), rJava, methods, stringr, R.utils
+Imports: pROC (>= 1.16), rJava, methods, stringr, R.utils
 Suggests: 
     randomForest,
     testthat (>= 2.1.0)
