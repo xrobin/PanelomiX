@@ -10,8 +10,7 @@
 \usage{
 \method{predict}{exh}(object, newdata = NULL, center = TRUE, ...)
 
-\method{predict}{exhlist}(object, newdata = NULL, statistics = mean,
-  ...)
+\method{predict}{exhlist}(object, newdata = NULL, statistics = mean, ...)
 
 \method{predict}{exhcv}(object, ...)
 

@@ -9,14 +9,18 @@
 \usage{
 plot.thr.stability(...)
 
-\method{plot.thr.stability}{exhlist}(x, data = NULL, found.mols = NULL,
-  add = FALSE, plot = TRUE, ...)
+\method{plot.thr.stability}{exhlist}(
+  x,
+  data = NULL,
+  found.mols = NULL,
+  add = FALSE,
+  plot = TRUE,
+  ...
+)
 
-\method{plot.thr.stability}{exhcv}(x, data, found.mols = NULL,
-  add = FALSE, plot = TRUE, ...)
+\method{plot.thr.stability}{exhcv}(x, data, found.mols = NULL, add = FALSE, plot = TRUE, ...)
 
-\method{plot.thr.stability}{exhcvlist}(x, data, found.mols = NULL,
-  add = FALSE, plot = TRUE, ...)
+\method{plot.thr.stability}{exhcvlist}(x, data, found.mols = NULL, add = FALSE, plot = TRUE, ...)
 }
 \arguments{
 \item{...}{additional arguments to \code{\link{plot}}}

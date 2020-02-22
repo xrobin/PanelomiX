@@ -4,10 +4,22 @@
 \alias{exh.train.cv}
 \title{Cross-validation of a panel}
 \usage{
-exh.train.cv(data, predictors, response, fixed.predictors = NULL,
-  id = NULL, levels = base::levels(as.factor(data[[response]])),
-  na.rm = FALSE, nreps = 10, k = 10, stratified = TRUE,
-  verbose = FALSE, working.dir = NULL, java.keep.files = TRUE, ...)
+exh.train.cv(
+  data,
+  predictors,
+  response,
+  fixed.predictors = NULL,
+  id = NULL,
+  levels = base::levels(as.factor(data[[response]])),
+  na.rm = FALSE,
+  nreps = 10,
+  k = 10,
+  stratified = TRUE,
+  verbose = FALSE,
+  working.dir = NULL,
+  java.keep.files = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{the dataset}

@@ -16,4 +16,4 @@ URL: http://panelomix.net/
 LazyLoad: yes
 SystemRequirements: Java (>= 6.0)
 NeedsCompilation: yes
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

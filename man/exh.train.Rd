@@ -4,16 +4,29 @@
 \alias{exh.train}
 \title{Train a panel with the new java interface}
 \usage{
-exh.train(data, predictors, response, fixed.predictors = NULL,
-  id = NULL, constrain.on = c("specificity", "sensitivity",
-  "accuracy"), min.constr = 0.95,
+exh.train(
+  data,
+  predictors,
+  response,
+  fixed.predictors = NULL,
+  id = NULL,
+  constrain.on = c("specificity", "sensitivity", "accuracy"),
+  min.constr = 0.95,
   levels = base::levels(as.factor(data[[response]])),
-  panels.of.num = 1:length(predictors), test.thresholds = NA,
-  directions = NULL, filter.number.thresholds = NA,
-  filter.randomForest = FALSE, verbose = TRUE,
-  multiple.panels = c("all", "random", "first"), na.rm = c("all",
-  "local"), rand.response = FALSE, limit.java.threads = NA,
-  working.dir = NULL, progress = TRUE, ...)
+  panels.of.num = 1:length(predictors),
+  test.thresholds = NA,
+  directions = NULL,
+  filter.number.thresholds = NA,
+  filter.randomForest = FALSE,
+  verbose = TRUE,
+  multiple.panels = c("all", "random", "first"),
+  na.rm = c("all", "local"),
+  rand.response = FALSE,
+  limit.java.threads = NA,
+  working.dir = NULL,
+  progress = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{the dataset}

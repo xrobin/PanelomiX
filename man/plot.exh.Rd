@@ -4,9 +4,15 @@
 \alias{plot.exh}
 \title{Plot the MDS of a panel}
 \usage{
-\method{plot}{exh}(x, newdata = NULL, xlab = "First MDS dimension",
-  ylab = "Second MDS dimension", main = "MDS on PRIM",
-  ask = dev.interactive(), ...)
+\method{plot}{exh}(
+  x,
+  newdata = NULL,
+  xlab = "First MDS dimension",
+  ylab = "Second MDS dimension",
+  main = "MDS on PRIM",
+  ask = dev.interactive(),
+  ...
+)
 }
 \arguments{
 \item{x}{an train panel}
