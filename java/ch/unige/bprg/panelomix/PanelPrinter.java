@@ -17,8 +17,8 @@ public class PanelPrinter extends PrintStream {
 	 * @throws FileNotFoundException 
 	 */
 	public PanelPrinter(PanelomiX panelomix) throws FileNotFoundException {
-		super("/dev/null");
-		this.ps1 = new PrintStream("/dev/null");
+		super(OSCall.NulDir());
+		this.ps1 = new PrintStream(OSCall.NulDir());
 		this.p = panelomix;
 	}
 
