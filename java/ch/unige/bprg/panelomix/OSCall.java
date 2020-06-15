@@ -5,7 +5,7 @@ public class OSCall {
 
     public static String NulDir() {
         if (System.getProperty("os.name").startsWith("Linux")) {
-            dir = "/dev/nul";
+            dir = "/dev/null";
         } else {
             dir = "nul";
         }
