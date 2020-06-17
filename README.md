@@ -30,7 +30,7 @@ System Requirements
 
 This package requires a GNU/Linux system with Java installed and a working installation of [rJava](https://cran.r-project.org/web/packages/rJava/index.html).
 
-Windows is not supported. MacOS is untested.
+Windows is supported. MacOS is untested.
 
 Help
 -------
