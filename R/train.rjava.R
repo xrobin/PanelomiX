@@ -224,7 +224,7 @@ exh.train <- function(data, predictors, response,
     exh$predictors <- predictors <- all.predictors[!all.predictors %in% fixed.predictors]
   }
   else { # or use pROC to determine the possible thresholds if missing from test.thresholds
-    if (any(is.na(test.thresholds))) {
+    if (all(is.na(test.thresholds))) {
       for (pred in all.predictors) {
         predictor.roc <- pROC::roc(data[[response]], data[[pred]], levels = levels, direction = directions[[predictor]])
         coords.vector <- pROC::coords(predictor.roc, "l", ret = "t", transpose = "FALSE")$threshold
