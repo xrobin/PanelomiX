@@ -38,7 +38,8 @@ exh.train <- function(data, predictors, response,
                       min.constr = 0.95,
                       levels = base::levels(as.factor(data[[response]])),
                       panels.of.num = 1:length(predictors),
-                      test.thresholds = NA, # ignored if filter.randomForest is a list
+					  test.thresholds.predictors = NA, # ignored if filter.randomForest is a list
+					  test.thresholds.fixed.predictors = NA, # ignored if filter.randomForest is a list
                       directions = NULL,
                       filter.number.thresholds = NA, # ignored if filter.randomForest is a list
                       filter.randomForest = FALSE,
