@@ -12,10 +12,10 @@ sudo: required
 
 apt_packages:
   - r-cran-rjava
-  - openjdk-7-jre
+  - openjdk-11-jre-headless
 
 before_install:
-  - export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre
+  - export JAVA_HOME=/usr/lib/jvm/default-java
   - export PATH=$PATH:$JAVA_HOME/bin
-  - export LD_LIBRARY_PATH=/usr/lib/jvm/java-8-oracle/lib/amd64:/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$JAVA_HOME/lib/server
   - sudo /usr/local/lib/R CMD javareconf
