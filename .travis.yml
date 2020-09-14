@@ -11,4 +11,4 @@ after_success:
 sudo: required
 
 apt_packages:
-  - r-cran-java
+  - r-cran-rjava
