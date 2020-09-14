@@ -7,6 +7,8 @@ r_packages:
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
+  
+sudo: required
 
 apt_packages:
-  - default-jre
+  - r-cran-java
