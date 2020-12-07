@@ -53,7 +53,7 @@ exh.train <- function(data, predictors, response,
                       ...) {
 
   # Initialize rJava
-  .jinit()
+  .jinit(".")
   # Match arguments
   constrain.on <- match.arg(constrain.on)
   na.rm <- match.arg(na.rm)
