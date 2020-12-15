@@ -8,8 +8,7 @@
 #' @param constrain.on,min.constr objective constrains. Consider only panel with \code{min.nr} \dQuote{specificity} or \dQuote{sensitivity}, or maximize global \dQuote{accuracy}
 #' @param levels the values of \code{response} to use as negative and positive data
 #' @param panels.of.num a vector of integer, defining the acceptable number of markers included in the panel
-#' @param test.thresholds.predictors the thresholds of predictors to test. Ignored if filter.randomForest is a list
-#' @param test.thresholds.fixed.predictors the thresholds of fixed predictors to test. Ignored if filter.randomForest is a list
+#' @param test.thresholds.predictors list of thresholds of predictors to test. Ignored if filter.randomForest is a list
 #' @param directions a named list (after the \code{predictors} and \code{fixed.predictors}) of directions as described in \code{\link[pROC]{roc}}
 #' @param filter.number.thresholds if \code{TRUE}, filter the \code{test.thresholds} to speed up the search. Ignored if filter.randomForest is a list. Can be the character \dQuote{2x2} or a numeric (length 1)
 #' @param filter.randomForest a \code{\link{list}} with 2 elements: \code{molecules} (number of markers to keep) \code{thresholds} (number of thresholds to keep per marker)
