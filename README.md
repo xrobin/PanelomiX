@@ -51,8 +51,27 @@ data(aSAH)
 ```
 ### Basic training of a panel
 ```R
-panels <- exh.train(aSAH, c("age", "s100b", "ndka"), "outcome")
+panels <- exh.train( data = aSAH, 
+                     predictors = c("age", "s100b", "ndka"), 
+                     response = "outcome")
 ```
+### Test a specific threshold for one/many candidate predictor(s) 
+```R
+panels <- exh.train(data = aSAH, 
+                    predictors = c("age", "s100b", "ndka"), 
+                    response = "outcome", 
+                    test.thresholds.predictors = list(s100b = 0.5))
+```
+
+### Test a specific direction for one/many candidate predictor(s) 
+```R
+panels <- exh.train(data = aSAH, 
+                    predictors = c("age", "s100b", "ndka"), 
+                    fixed.predictors = c("age"), 
+                    response = "outcome",
+                    directions = list(age = ">"))
+```
+
 ### Cross-validation
 ```R
 cv <- exh.train.cv(aSAH, c("age", "s100b", "ndka"), "outcome", progress=FALSE)
