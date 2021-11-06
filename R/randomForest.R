@@ -39,25 +39,26 @@ filter.thresholds.randomForest <- function(rfmodel,
 	split.points <- rfmodel$forest$xbestsplit[rfmodel$forest$nodestatus == 1]
 	threshs <- split(split.points, split.vars)
 	#  names(threshs) <- molecules[as.numeric(names(threshs))]
-	
+
 	if (!is.null(limit.mols)) {
 		unfixed.molecules <- molecules[!molecules%in%fixed.predictors]
 		t <- sort(table(split.vars)[unfixed.molecules], decreasing=decreasing)
 		molecules <- names(t)[1:min(limit.mols, length(unfixed.molecules))]
 		molecules <- unique(c(molecules, fixed.predictors))
 	}
-	
+
 	# This function computes euclidian distances
 	match.thresh.euclidian <- function(i, obs.thresholds, target.thresholds) {
 		distance <- sqrt((obs.thresholds[2,i] - target.thresholds[2,])^2 + (obs.thresholds[3,i] - target.thresholds[3,])^2)
 		which.min(distance)
 	}
-	
+
 	ret <- list()
 	for (mol in molecules) {
 		# Get target and observed thresholds
-		target.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels), "l", drop=FALSE, transpose = FALSE)
-		target.thresholds <- target.thresholds[is.finite(target.thresholds$threshold),, drop=FALSE] # remove Inf and -Inf
+		target.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels), "l", drop=FALSE, transpose = TRUE)
+		target.thresholds <- target.thresholds[,is.finite(target.thresholds[1,]), drop=FALSE] # remove Inf and -Inf
+
 		# Make sure the is.finite() test didn't remove everything.
 		# If it is the case, die with a clear message.
 		if (dim(target.thresholds)[2] < 1) {
