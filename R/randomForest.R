@@ -31,7 +31,7 @@ filter.thresholds.randomForest <- function(rfmodel,
 										   decreasing=TRUE,
 										   min=NULL,
 										   num=NULL,
-										   limit.mols=NULL # Not counting fixed.markers 
+										   limit.mols=NULL # Not counting fixed.markers
 ) {
 	molecules <- rownames(rfmodel$importance)
 	split.vars <- factor(rfmodel$forest$bestvar[rfmodel$forest$nodestatus == 1])
@@ -56,7 +56,7 @@ filter.thresholds.randomForest <- function(rfmodel,
 	ret <- list()
 	for (mol in molecules) {
 		# Get target and observed thresholds
-		target.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels), "l", drop=FALSE, transpose = TRUE)
+		target.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels, quiet=TRUE), "l", drop=FALSE, transpose = TRUE)
 		target.thresholds <- target.thresholds[,is.finite(target.thresholds[1,]), drop=FALSE] # remove Inf and -Inf
 
 		# Make sure the is.finite() test didn't remove everything.
@@ -66,11 +66,11 @@ filter.thresholds.randomForest <- function(rfmodel,
 		}
 		obs.levels <- unique(threshs[[mol]])
 		# This is the slow step – coords with 1000 levels takes about 1s
-		obs.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels), obs.levels, drop=FALSE, transpose = TRUE)
+		obs.thresholds <- pROC::coords(pROC::roc(data[[response]], data[[mol]], levels=levels, quiet=TRUE), obs.levels, drop=FALSE, transpose = TRUE)
 
 		# Match each observed with a target using euclidian distance
 		matches <- target.thresholds[1,sapply(1:ncol(obs.thresholds), match.thresh.euclidian, obs.thresholds=obs.thresholds, target.thresholds=target.thresholds)]
-		
+
 		# Retrieve the matched thresholds from the matches!
 		matched.thresholds <- matches[match(threshs[[mol]], obs.thresholds[1,])]
 		# Get the sorted threshold frequencies
