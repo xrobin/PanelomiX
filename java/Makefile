@@ -4,6 +4,7 @@ SOURCES = \
 	./ch/unige/bprg/panelomix/IncompleteConfigurationException.java \
 	./ch/unige/bprg/panelomix/IncomparablePanelsException.java \
 	./ch/unige/bprg/panelomix/AlreadyConfiguredException.java \
+	./ch/unige/bprg/panelomix/OSCall.java \
 	./ch/unige/bprg/panelomix/Panel.java \
 	./ch/unige/bprg/panelomix/PanelOptimizeOptions.java \
 	./ch/unige/bprg/panelomix/PanelPrinter.java \
@@ -23,7 +24,7 @@ SOURCES = \
 	./ch/unige/bprg/panelomix/PanelomiX.java \
 	./ch/unige/bprg/panelomix/PanelComparator.java
 OBJECTS = $(SOURCES:.java=.class)
-JARS = PanelomiX.jar
+JARS = ../inst/java/PanelomiX.jar
 
 JAVAC = javac
 JAR = jar
@@ -33,15 +34,15 @@ JAR = jar
 .java.class:
 		$(JAVAC) -target 1.6 -source 1.6 $<
 
-all: compile install clean
+all: build
 
 $(JARS): $(OBJECTS)
 		$(JAR) cvf $@ $(OBJECTS) 
 
-compile: $(JARS)
+build: $(JARS)
 
-install:
-		@cp $(JARS) ../inst/java
+#install:
+#		@cp $(JARS) ../inst/java
 
 clean:
 		-@rm -f $(OBJECTS) $(JARS)

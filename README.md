@@ -94,3 +94,14 @@ table.nr.stability(cv)
 # How many biomarkers should be positive for the panel to be positive?
 table.min.nr.stability(cv)
 ```
+
+Development
+-------
+
+To rebuild the java package:
+
+```
+cd java
+make 
+``` 
+Then you can install the package normally.

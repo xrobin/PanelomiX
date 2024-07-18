@@ -811,7 +811,7 @@ public class PanelomiX {
 	 * @return void
 	 */
 	protected synchronized void comparePanelSp(float se, float sp, int[] panel, int[] thresholdIdx, int scorePosAt, Thread callerThread) {
-		if (sp < this.maxSp) {
+		if (sp < this.optimizeOptions.getMinConstr()) {
 			return;
 		}
 		else if (se > this.maxSe) {
@@ -862,7 +862,10 @@ public class PanelomiX {
 	 * @return void
 	 */
 	protected synchronized void comparePanelSe(float se, float sp, int[] panel, int[] thresholdIdx, int scorePosAt, Thread callerThread) {
-		if (sp > this.maxSp) {
+		if (se < this.optimizeOptions.getMinConstr()) {
+			return;
+		}
+		else if (sp > this.maxSp) {
 			this.outputStream.printFoundBetter(se, sp);
 			this.outputStream.printPanel(panel, thresholdIdx, scorePosAt);
 			this.panelList.foundBetter(se, sp, panel.length);
@@ -870,9 +873,6 @@ public class PanelomiX {
 			this.maxSe = se;
 			this.maxSp = sp; /* reinitialize maxSp */
 			this.bestLength = panel.length;
-		}
-		else if (se < this.maxSe) {
-			return;
 		}
 		else if (sp == this.maxSp) {
 			if (se > this.maxSe && panel.length <= this.bestLength) { // if we find a panel with same SE but better sp, it is better!
